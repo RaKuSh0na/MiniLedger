@@ -1,10 +1,41 @@
-# .NET / ASP.NET
-backend/bin/
-backend/obj/
+# --------------------------
+# Backend
+# --------------------------
+
+# Ignore SQLite database (generated)
 *.db
 
-# Logs
-*.log
+# Ignore VS/Visual Studio temporary files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-# Docker (optional)
-*.env
+# Ignore VS Code workspace settings (optional)
+.vscode/
+
+# Ignore build outputs (optional)
+bin/
+obj/
+
+# --------------------------
+# Frontend
+# --------------------------
+
+# Node modules (Angular dependencies)
+frontend/node_modules/
+
+# Angular build outputs
+frontend/dist/
+frontend/out-tsc/
+.angular/cache/
+
+# Logs
+npm-debug.log
+yarn-error.log
+
+# --------------------------
+# System files
+# --------------------------
+.DS_Store
+Thumbs.db
