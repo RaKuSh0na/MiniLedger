@@ -1,0 +1,15 @@
+.col-order { 
+    width: 5%; 
+}
+
+.col-name { 
+    width: 35%; 
+}
+
+.col-balance { 
+    width: 20%; 
+}
+
+.col-actions { 
+    width: 40%; 
+}

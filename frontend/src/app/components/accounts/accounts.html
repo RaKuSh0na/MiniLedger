@@ -1,0 +1,153 @@
+<div class="container-fluid">
+    <!-- Top Navigation Bar (Header) -->
+    <div class="row p-2 bg-dark align-items-center">
+        <div class="col-6">
+            <h3 class="text-white mb-0">Account Ledger</h3>
+        </div>
+        <div class="col-6 text-end d-flex justify-content-end align-items-center">
+            <!-- The 'Add Account' button opens the modal -->
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                Add Account
+            </button>
+        </div>
+    </div>
+
+    <!-- Accounts Table -->
+    <ng-container *ngIf="accounts && accounts.length > 0; else noRecord">
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <!-- Using classes defined in accounts.css -->
+                    <th class="col-order">Order ID</th>
+                    <th class="col-name">Account Name</th>
+                    <th class="col-balance">Account Balance</th>
+                    <th class="col-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let account of accounts; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ account.name }}</td>
+                    <!-- HARDCODE FIX: Changed from currency pipe to standard JavaScript formatting (.toFixed(2)) 
+                                      and appended ' BDT' directly. This bypasses the locale error entirely. -->
+                    <td>{{ account.balance.toFixed(2) }} BDT</td>
+                    <td class="text-center">
+                        <div class="d-inline-flex align-items-center">
+                            
+                            <!-- Edit Button: Prepares the data, then opens the Edit Name modal -->
+                            <button type="button" class="btn btn-primary btn-sm me-2"
+                                (click)="prepareEdit(account)" data-bs-toggle="modal" data-bs-target="#editNameModal">
+                                Edit
+                            </button>
+                            
+                            <!-- Transactions Button: Redirects to the transaction page -->
+                            <button type="button" class="btn btn-info btn-sm me-2"
+                                (click)="goToTransactions(account.id)">
+                                Transactions
+                            </button>
+
+                            <!-- Delete Button: Calls your deleteAccount() method -->
+                            <button type="button" class="btn btn-danger btn-sm"
+                                (click)="deleteAccount(account.id)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-container>
+    <ng-template #noRecord>
+        <h5 class="mt-3">No Accounts Found</h5>
+    </ng-template>
+</div>
+
+<!-- ---------------------------------------------------------------------- -->
+<!-- 1. ADD ACCOUNT Modal (For creating a new account) -->
+<!-- ---------------------------------------------------------------------- -->
+<!-- FIX: data-bs-backdrop="static" and data-bs-keyboard="false" make the modal sticky, 
+         preventing unexpected closure when interacting with the input field. -->
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title" id="addAccountModalLabel">Add Account</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Form: No data-bs-dismiss on the form itself -->
+            <form #addForm="ngForm" (ngSubmit)="createAccount()">
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <!-- Account Name: Linked to newAccountName -->
+                            <input type="text" [(ngModel)]="newAccountName" name="name" class="form-control"
+                                placeholder="Account Name" required />
+                        </div>
+                        <div class="col-12">
+                            <!-- Initial Balance: CHANGED placeholder to reflect default value of 0 -->
+                            <input type="number" name="initialBalance" class="form-control"
+                                min="0" step="0.01" placeholder="Initial Balance = 0" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer justify-content-center">
+                    <!-- data-bs-dismiss="modal" remains on the submit button -->
+                    <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid" data-bs-dismiss="modal">
+                        Add
+                    </button>
+                    <!-- Keep standard dismiss button for footer "Close" -->
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ---------------------------------------------------------------------- -->
+<!-- 2. EDIT ACCOUNT NAME Modal (For editing the name of the selected account) -->
+<!-- ---------------------------------------------------------------------- -->
+<!-- No need to change the edit modal as it was already working -->
+<div class="modal fade" id="editNameModal" tabindex="-1" aria-labelledby="editNameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title" id="editNameModalLabel">Edit Account Name</h4>
+                <!-- Call clearEditState() on modal close button -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="clearEditState()" aria-label="Close"></button>
+            </div>
+
+            <form *ngIf="selectedAccount" #editForm="ngForm" (ngSubmit)="updateAccount()">
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Bind to the stable selectedAccount.name property -->
+                            <input type="text" [(ngModel)]="selectedAccount.name" name="editName" class="form-control"
+                                placeholder="Current Account Name" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer justify-content-center">
+                    <!-- data-bs-dismiss="modal" added back to the submit button -->
+                    <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid" data-bs-dismiss="modal">
+                        Save
+                    </button>
+                    <!-- Call clearEditState() on modal close button -->
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="clearEditState()">Close</button>
+                </div>
+            </form>
+
+            <!-- Fallback if the account isn't ready -->
+            <div *ngIf="!selectedAccount" class="modal-body text-center">Loading account details...</div>
+        </div>
+    </div>
+</div>
