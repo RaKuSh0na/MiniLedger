@@ -1,0 +1,10 @@
+# .NET / ASP.NET
+backend/bin/
+backend/obj/
+*.db
+
+# Logs
+*.log
+
+# Docker (optional)
+*.env
