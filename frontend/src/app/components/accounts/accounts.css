@@ -1,14 +1,14 @@
-/* Header exactly like Transaction page */
+/* Header */
 .account-header {
-    background-color: #343a40;  /* Transaction page dark */
+    background-color: #343a40;  
     color: #fff !important;
-    padding: 1rem 0;             /* same height */
+    padding: 1rem 0;            
     width: 100%;
     display: flex;
     align-items: center;
 }
 
-/* Shadow like Transaction page header */
+/*  header */
 .account-header.shadow-sm {
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
 }

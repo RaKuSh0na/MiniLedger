@@ -35,7 +35,7 @@ export class AccountsComponent implements OnInit {
 
   // Called on Add Account Modal Submit
   createAccount() {
-    // NOTE: Your service call hardcodes balance: 0.
+    // Service call hardcodes balance: 0.
     if (!this.newAccountName.trim()) return;
 
     this.accountsService.createAccount({ name: this.newAccountName, balance: 0 }).subscribe(() => {
