@@ -1,15 +1,39 @@
-.col-order { 
-    width: 5%; 
+/* Header exactly like Transaction page */
+.account-header {
+    background-color: #343a40;  /* Transaction page dark */
+    color: #fff !important;
+    padding: 1rem 0;             /* same height */
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
-.col-name { 
-    width: 35%; 
+/* Shadow like Transaction page header */
+.account-header.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
 }
 
-.col-balance { 
-    width: 20%; 
+/* Table Columns */
+.col-order { width: 5%; }
+.col-name { width: 35%; }
+.col-balance { width: 20%; }
+.col-actions { width: 40%; }
+
+/* Table Styling */
+.table-responsive { padding: 15px; }
+.table { width: 100%; }
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
 }
 
-.col-actions { 
-    width: 40%; 
+/* Text Styling */
+.text-success { font-weight: 600; color: #28a745 !important; }
+.text-danger { font-weight: 600; color: #dc3545 !important; }
+
+/* Modal Header Styling */
+.modal-header.bg-dark {
+    background-color: #343a40 !important;
+    color: white;
 }

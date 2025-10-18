@@ -38,7 +38,7 @@ public class TransactionsController : ControllerBase
 
     // POST: api/transactions
     [HttpPost]
-    public async Task<ActionResult<Transaction>> AddTransaction([FromBody]Transaction transaction)
+    public async Task<ActionResult<Transaction>> AddTransaction([FromBody] Transaction transaction)
     {
         var account = await _context.Accounts.FindAsync(transaction.AccountId);
         if (account == null)
@@ -52,7 +52,9 @@ public class TransactionsController : ControllerBase
         else
             return BadRequest("Transaction type must be 'credit' or 'debit'.");
 
-        transaction.Date = DateTime.UtcNow;
+        transaction.Date = transaction.Date == default ? DateTime.UtcNow : transaction.Date;
+
+        transaction.Description = transaction.Description?.Trim();
 
         _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();

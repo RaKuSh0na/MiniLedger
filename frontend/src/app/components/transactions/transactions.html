@@ -1,0 +1,166 @@
+<div class="container-fluid">
+
+  <!-- Account Header -->
+  <div *ngIf="account" class="row p-3 bg-dark text-white shadow-sm align-items-center">
+    <div class="col-4 d-flex align-items-center">
+      <button type="button" class="btn btn-outline-light" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Go Back
+      </button>
+    </div>
+
+    <div class="col-4 text-center">
+      <p class="mb-1 text-uppercase small">Account Name</p>
+      <h4 class="mb-0">{{ account.name }}</h4>
+    </div>
+
+    <div class="col-4 text-end d-flex flex-column align-items-end">
+      <p class="mb-1 text-uppercase small">Current Balance</p>
+      <h4
+        class="mb-0"
+        [ngClass]="{
+          'text-success': account.balance >= 0,
+          'text-danger': account.balance < 0
+        }"
+      >
+        {{ account.balance | number:'1.2-2' }} BDT
+      </h4>
+    </div>
+  </div>
+
+  <!-- Add Transaction Button -->
+  <div class="row mt-3">
+    <div class="col-12 text-end">
+      <button
+        type="button"
+        class="btn btn-warning"
+        data-bs-toggle="modal"
+        data-bs-target="#addTransactionModal"
+      >
+        Add Transaction
+      </button>
+    </div>
+  </div>
+
+  <!-- Transactions Table -->
+  <ng-container *ngIf="transactions && transactions.length > 0; else noRecord">
+    <div class="table-responsive mt-3">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="col-date">Date</th>
+            <th class="col-description">Description</th>
+            <th class="col-type">Type</th>
+            <th class="col-amount text-end">Amount (BDT)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of transactions">
+            <td>{{ tx.date | date:'mediumDate' }}</td>
+            <td>{{ tx.description ? tx.description : 'N/A' }}</td>
+            <td
+              [ngClass]="{
+                'text-success': tx.type.toLowerCase() === 'credit',
+                'text-danger': tx.type.toLowerCase() === 'debit'
+              }"
+            >
+              {{ tx.type | titlecase }}
+            </td>
+            <td class="text-end fw-bold">{{ tx.amount | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <!-- No Transactions Message -->
+  <ng-template #noRecord>
+    <div class="alert alert-info mt-3 text-center">
+      No transactions recorded for this account. Click 'Add Transaction' to start.
+    </div>
+  </ng-template>
+</div>
+
+<!-- Add Transaction Modal -->
+<div
+  class="modal fade"
+  id="addTransactionModal"
+  tabindex="-1"
+  aria-labelledby="addTransactionModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="addTransactionModalLabel">Record New Transaction</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form #addTxForm="ngForm" (ngSubmit)="addTransaction()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Transaction Type</label>
+            <select [(ngModel)]="newTransaction.type" name="type" class="form-select" required>
+              <option value="credit">Credit (Money In)</option>
+              <option value="debit">Debit (Money Out)</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Amount (BDT)</label>
+            <input
+              type="number"
+              [(ngModel)]="newTransaction.amount"
+              name="amount"
+              class="form-control"
+              min="0.01"
+              step="0.01"
+              placeholder="e.g., 500.00"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Transaction Date</label>
+            <input
+              type="date"
+              [(ngModel)]="newTransaction.date"
+              name="date"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Description / Purpose</label>
+            <input
+              type="text"
+              [(ngModel)]="newTransaction.description"
+              name="description"
+              class="form-control"
+              placeholder="e.g., Salary deposit, Coffee purchase"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="addTxForm.invalid || newTransaction.amount <= 0"
+            data-bs-dismiss="modal"
+          >
+            Record Transaction
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

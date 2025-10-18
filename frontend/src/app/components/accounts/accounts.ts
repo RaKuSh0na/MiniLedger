@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './accounts.html',
-  styleUrl: './accounts.css'
+  styleUrls: ['./accounts.css']
 })
 export class AccountsComponent implements OnInit {
 
@@ -41,6 +41,8 @@ export class AccountsComponent implements OnInit {
     this.accountsService.createAccount({ name: this.newAccountName, balance: 0 }).subscribe(() => {
       this.newAccountName = '';
       this.loadAccounts();
+
+      this.closeModal('addAccountModal');
     });
   }
 
@@ -54,9 +56,9 @@ export class AccountsComponent implements OnInit {
 
     this.accountsService.updateAccount(id, { name: newName }).subscribe(() => {
       this.loadAccounts();
-
-      // Cleanup after successful update
-      this.clearEditState();
+      
+      this.closeModal('editNameModal');
+     
     });
   }
 
@@ -76,6 +78,15 @@ export class AccountsComponent implements OnInit {
 
   clearEditState() {
     this.selectedAccount = null;
+  }
+
+  closeModal(modalId: string) {
+    const modalElement = document.getElementById(modalId);
+    if (modalElement) {
+      const modalInstance = (window as any).bootstrap?.Modal.getInstance(modalElement)
+        || new (window as any).bootstrap.Modal(modalElement);
+      modalInstance.hide();
+    }
   }
 
   //  direct to transaction page

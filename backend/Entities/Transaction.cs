@@ -20,4 +20,6 @@ public class Transaction
     public string Type { get; set; } = "credit"; // default credit
 
     public DateTime Date { get; set; } = DateTime.Now;
+
+    public string? Description { get; set; } 
 }

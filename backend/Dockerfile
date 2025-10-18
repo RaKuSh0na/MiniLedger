@@ -1,27 +1,19 @@
-# Stage 1: Build
+# Build backend
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
-# Copy csproj and restore dependencies
-COPY ["backend.csproj", "./"]
+COPY *.csproj ./
 RUN dotnet restore
 
-# Copy everything else and build
-COPY . .
+COPY . . 
 RUN dotnet publish -c Release -o out
 
-# Stage 2: Runtime
+# Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
+COPY --from=build /app/out ./
 
-# Set ASP.NET Core to listen on all network interfaces
+EXPOSE 5000
 ENV ASPNETCORE_URLS=http://+:5000
 
-# Copy published files from build stage
-COPY --from=build /app/out .
-
-# Expose port
-EXPOSE 5000
-
-# Run the app
-ENTRYPOINT ["dotnet", "backend.dll"]
+CMD ["dotnet", "backend.dll"]

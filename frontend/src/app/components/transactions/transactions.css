@@ -1,0 +1,53 @@
+/* ---------------------------------- */
+/* General Table Container Styling    */
+/* ---------------------------------- */
+.table-responsive {
+    padding: 15px;
+}
+
+/* Column widths like Accounts page */
+.col-date { width: 15%; min-width: 100px; }
+.col-description { width: 45%; }
+.col-type { width: 15%; min-width: 80px; }
+.col-amount { width: 25%; min-width: 120px; }
+
+/* Text styling for transaction types */
+.text-success {
+    font-weight: 600; /* Semi-bold */
+    color: #28a745 !important; /* Brighter green */
+}
+
+.text-danger {
+    font-weight: 600; /* Semi-bold */
+    color: #dc3545 !important; /* Standard red */
+}
+
+/* Table header styling */
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa; /* Light grey header background */
+}
+
+/* Table general styling */
+.table {
+    width: 100%;
+}
+
+/* Dark header bar like Accounts page */
+.transaction-header {
+    background-color: #343a40;
+    color: white;
+}
+
+/* Account summary inside header */
+.account-summary {
+    background-color: #343a40;
+    color: white;
+}
+
+/* Modal header styling */
+.modal-header.bg-dark {
+    background-color: #343a40;
+    color: white;
+}
